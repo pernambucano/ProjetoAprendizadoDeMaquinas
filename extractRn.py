@@ -10,22 +10,40 @@ import numpy as np
 extractRn(p, U):
 	rowsU, columnsU = U.shape
 	C = getPositiveLabels(p)
-	n = 0.30  # porcentagem de instancias que queremos
-
+	n = 30  # numero de instancias que queremos ## Possivel mudanca pra porcentagem
+	L = np.array(columnsU + 1) # lista de exemplos + a entropia
+	
+	Entropy = []
 	# Um lista de entropia pra cada d em relacao a cada classe.
 	# A lista tera o formato :  [entropy, instance]
-	for index in xrange(0,rowsU):
-		Entropy = getEntropy(C, U[index])
-		myTuple = np.hstack((Entropy,U[index]))
-		L = np.vstack((L,myTuple))
+	for d in U:
+		Entropy.append(getEntropy(C,d))
 
-	ranked = getRank(L)
-	rowsR, columnsR = ranked.shape
+	rn = getRank(Entropy, U, n)
 
-	rn = ranked[0:rows*n,]
-
+	# rn e uma lista de python
+	# se for necessario transformar em um numpy.array:
+	#	rn = np.array(rn)
 	return rn
 
+getPositiveLabels(p):
+	pass 
+
+getEntropy(C,d):
+	pass
+
+# Recebe uma lista de entropias e retorna uma lista com os n indices com maiores entropias
+getRank(Entropy, U, n):
+	index = np.argsort(Entropy)[::-1][n] # testar
+	# se for usar porcentagem :
+	# 	index = np.argsort(Entropy)[::-1]
+	# 	indices = index[0:U.shape[0]*n]
+
+	instances = []
+	for i in index:
+		instances.append(U[i])
+
+	return instances
 
 
 
