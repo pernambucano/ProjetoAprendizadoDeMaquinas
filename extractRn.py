@@ -14,8 +14,6 @@ extractRn(p, U):
 	L = np.array(columnsU + 1) # lista de exemplos + a entropia
 	
 	Entropy = []
-	# Um lista de entropia pra cada d em relacao a cada classe.
-	# A lista tera o formato :  [entropy, instance]
 	for d in U:
 		Entropy.append(getEntropy(C,d))
 
@@ -44,6 +42,3 @@ getRank(Entropy, U, n):
 		instances.append(U[i])
 
 	return instances
-
-
-
