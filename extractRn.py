@@ -30,7 +30,7 @@ getPositiveLabels(p):
 getEntropy(C,d):
 	pass
 
-# Recebe uma lista de entropias e retorna uma lista com os n indices com maiores entropias
+# Recebe uma lista de entropias e retorna uma lista com os n instancias com maiores entropias
 getRank(Entropy, U, n):
 	index = np.argsort(Entropy)[::-1][n] # testar
 	# se for usar porcentagem :
