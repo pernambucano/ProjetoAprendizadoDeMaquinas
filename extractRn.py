@@ -7,7 +7,7 @@
 
 import numpy as np
 
-extractRn(p, U):
+def extractRn(p, U):
 	rowsU, columnsU = U.shape
 	C = getPositiveLabels(p)
 	n = 30  # numero de instancias que queremos ## Possivel mudanca pra porcentagem
@@ -24,14 +24,14 @@ extractRn(p, U):
 	#	rn = np.array(rn)
 	return rn
 
-getPositiveLabels(p):
+def getPositiveLabels(p):
 	pass 
 
-getEntropy(C,d):
+def getEntropy(C,d):
 	pass
 
 # Recebe uma lista de entropias e retorna uma lista com os n instancias com maiores entropias
-getRank(Entropy, U, n):
+def getRank(Entropy, U, n):
 	index = np.argsort(Entropy)[::-1][n] # testar
 	# se for usar porcentagem :
 	# 	index = np.argsort(Entropy)[::-1]
