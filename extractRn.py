@@ -11,7 +11,6 @@ extractRn(p, U):
 	rowsU, columnsU = U.shape
 	C = getPositiveLabels(p)
 	n = 0.30  # porcentagem de instancias que queremos
-	#rn = np.array([])
 
 	# Um lista de entropia pra cada d em relacao a cada classe.
 	# A lista tera o formato :  [entropy, instance]
@@ -23,7 +22,7 @@ extractRn(p, U):
 	ranked = getRank(L)
 	rowsR, columnsR = ranked.shape
 
-	rn = ranked[0:rows*0.3,]
+	rn = ranked[0:rows*n,]
 
 	return rn
 
