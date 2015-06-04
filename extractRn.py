@@ -25,6 +25,9 @@ def extractRn(p, U):
 	return rn
 
 def getPositiveLabels(p):
+	#para cada elemento em p, e conjunto l vazio
+	#	se a classe de p nao esta em l,
+	#	adicionar classe de p em l
 	pass 
 
 def getEntropy(C,d):
