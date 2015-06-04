@@ -25,10 +25,18 @@ def extractRn(p, U):
 	return rn
 
 def getPositiveLabels(p):
+	
 	#para cada elemento em p, e conjunto l vazio
-	#	se a classe de p nao esta em l,
-	#	adicionar classe de p em l
-	pass 
+		#	se a classe de p nao esta em l,
+		#	adicionar classe de p em l
+		# *** considera que a classe e a ultima posicao ***
+	labels = []
+	
+	for instance in p:
+		if instance[-1] not in labels:
+			labels.append(instance[-1])
+
+	return labels 
 
 def getEntropy(C,d):
 	pass
