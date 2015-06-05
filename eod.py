@@ -60,13 +60,18 @@ def eod(k, P, RN, U):
 	return kOutputs
 
 def euclidianDistance(d,p):
-	return np.linalg.norm(d-p)
+	#removes the last column, which is the class column, the calculates the euclidian distance
+	columns = len(d)
+	newD = d[0:columns-1]
+	newP = p[0:columns-1]
+
+	return np.linalg.norm(newD-newP)
 	
 def getLabel(d):
 	pass
 	
 def main():
-	print euclidianDistance(np.array([1,1]),np.array([2,2]))
+	print euclidianDistance(np.array([1,1,0]),np.array([2,2,0]))
 	
 if __name__ == '__main__':
     main()
