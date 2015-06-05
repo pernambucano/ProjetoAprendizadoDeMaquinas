@@ -52,7 +52,8 @@ def getEntropy(C,d,P):
 	
 	for classe in C:
 		probability = getProbability(C,d,P,classe)
-		entropy += probability * np.log2(probability)
+		if(probability != 0):
+			entropy += probability * np.log2(probability)
 	
 	return entropy
 	
@@ -73,10 +74,11 @@ def getProbability(C,d,P,classe):
 	
 	# probability = distance1/distance2 - when we have just one class, this always returns 1
 	
-	if(distance1 == distance2):
-		probability = distance1;
-	else:
-		probability = distance1/distance2
+	#ESSA PARTE TA CONFUSA NO ARTIGO, PRECISA SER REFEITA (CALCULO COM A NORMALIZACAO)
+	if(distance1 == distance2): 			#<--- BUG AQUI, TEM QUE ARRUMAR
+		probability = distance1;			#<--- BUG AQUI, TEM QUE ARRUMAR
+	else:						 			#<--- BUG AQUI, TEM QUE ARRUMAR
+		probability = distance1/distance2 	#<--- BUG AQUI, TEM QUE ARRUMAR
 		
 	return probability
 
