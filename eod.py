@@ -15,21 +15,21 @@ def eod(k, P, RN, U):
 	T = 0.7
 	
 	for d in RN:
-	# wont work
-		U.remove(d)
-	
+		#U.remove(d)
+		U = deleteRow(U, d)
+	    
 	for d in U:
 		for p in P:
 			distance = euclidianDistance(d,p)
 			
 			if distance > T:
-                            # wont work
-				U.remove(d)
+				#U.remove(d)
+				U =  deleteRow(U,d)
 				break
 				
 	Dnew = U
-	# wont work
-	PSize = len(p)
+	#PSize = len(p)
+	PSize = P.shape[0] # number of rows
 	NOutlier = 0
 	
 	for d in Dnew:
@@ -62,6 +62,12 @@ def eod(k, P, RN, U):
 	#rank k-PSize instances with label O (rank based on the euclidianDistance calculated
 
 	return kOutputs
+
+
+def deleteRow(Array, row):
+    sliced = np.where(np.all(Array==row, axis=1))
+    Array = np.delete(Array, sliced, 0)
+    return Array
 
 def euclidianDistance(d,p):
 	#removes the last column, which is the class column, the calculates the euclidian distance
