@@ -1,11 +1,12 @@
 #   EOD (Entropy-base Outlier Detection)
 #	Input:	
-#		k - number of outliers
-#		P - positive examples
-#		RN - negative samples
-#		U - unlabeled dataset
+#		k - number of outliers - integer
+#		P - positive examples - numpy.array
+#		RN - negative samples - numpy.array
+#		U - unlabeled dataset - numpy.array
 #	Output:
-#		op - k ranked outlier point
+#		op - k ranked outlier point - numpy.array
+#
 
 import numpy as np
 
@@ -14,6 +15,7 @@ def eod(k, P, RN, U):
 	T = 0.7
 	
 	for d in RN:
+	# wont work
 		U.remove(d)
 	
 	for d in U:
@@ -21,10 +23,12 @@ def eod(k, P, RN, U):
 			distance = euclidianDistance(d,p)
 			
 			if distance > T:
+                            # wont work
 				U.remove(d)
 				break
 				
 	Dnew = U
+	# wont work
 	PSize = len(p)
 	NOutlier = 0
 	
@@ -69,6 +73,9 @@ def euclidianDistance(d,p):
 	
 def getLabel(d):
 	pass
+
+def putLabel(label):
+    pass
 	
 def main():
 	print euclidianDistance(np.array([1,1,0]),np.array([2,2,0]))
