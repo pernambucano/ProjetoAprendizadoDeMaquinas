@@ -27,7 +27,7 @@ def eod(k, P, RN, U):
 				U =  deleteRow(U,d)
 				break
 				
-	Dnew = U
+	Dnew = U # gotta test this
 	#PSize = len(p)
 	PSize = P.shape[0] # number of rows
 	NOutlier = 0
@@ -36,11 +36,11 @@ def eod(k, P, RN, U):
 		NOutlier = NOutlier + 1
 
 		if NOutlier <= k-PSize:
-			pass
 			#label d as O // Outlier
+			putLabel(d, 'O')
 		else:
-			pass
 			#label d as N // Non-outlier
+			putLabel(d, 'N')
 
 	flag = true
 
@@ -80,7 +80,7 @@ def euclidianDistance(d,p):
 def getLabel(d):
 	pass
 
-def putLabel(label):
+def putLabel(instance, label):
     pass
 	
 def main():
