@@ -26,9 +26,11 @@ def eod(k, P, RN, U):
 				#U.remove(d)
 				U =  deleteRow(U,d)
 				break
-				
-	Dnew = U # gotta test this
-	#PSize = len(p)
+	# get the shape of U
+	Urows, Ucolumns = U.shape
+	# add a last column where we can put the new labels
+	Dnew = np.c_[U, np.zeros(Urows)]
+	#Dnew = U # gotta test this
 	PSize = P.shape[0] # number of rows
 	NOutlier = 0
 	
@@ -37,12 +39,12 @@ def eod(k, P, RN, U):
 
 		if NOutlier <= k-PSize:
 			#label d as O // Outlier
-			putLabel(d, 'O')
+			d = putLabel(d, 'O')
 		else:
 			#label d as N // Non-outlier
-			putLabel(d, 'N')
+			d = putLabel(d, 'N')
 
-	flag = true
+	flag = True
 
 	while flag:
 		for di in Dnew:
@@ -78,13 +80,30 @@ def euclidianDistance(d,p):
 	return np.linalg.norm(newD-newP)
 	
 def getLabel(d):
-	pass
 
-def putLabel(instance, label):
-    pass
+    if d[-1] == 0:
+        return 'N'
+    else:
+        return 'O'
+
+
+# If N, then it will add 0 as the last column, if O it will add 1
+def putLabel(d, label):
+
+    if label == 'N':
+        d[-1] = 0
+    else:
+        d[-1] = 1
+
+    return d
+
+	
 	
 def main():
-	print euclidianDistance(np.array([1,1,0]),np.array([2,2,0]))
-	
+	#print euclidianDistance(np.array([1,1,0]),np.array([2,2,0]))
+	a = np.array([[1,2,3],[4,5,6],[7,8,9]])
+	b = np.array([[1,2,0], [2,3,1]])
+        for i in b:
+            print getLabel(i)
 if __name__ == '__main__':
     main()
