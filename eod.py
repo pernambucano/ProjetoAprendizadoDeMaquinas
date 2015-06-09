@@ -55,7 +55,7 @@ def eod(k, P, RN, U):
 						temp = dj[-1]
 						dj[-1] = di[-1]
 						di[-1] = temp
-						
+
 						#calculate the new entropy
 
 				#if maximum decrease of entropy achieved
@@ -76,7 +76,7 @@ def deleteRow(Array, row):
     return Array
 
 def exchangeLabels(di, dj):
-
+	pass
 
 
 def euclidianDistance(d,p):
