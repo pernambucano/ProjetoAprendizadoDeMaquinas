@@ -1,5 +1,5 @@
 #   EOD (Entropy-base Outlier Detection)
-#	Input:	
+#	Input:
 #		k - number of outliers - integer
 #		P - positive examples - numpy.array
 #		RN - negative samples - numpy.array
@@ -13,15 +13,15 @@ import numpy as np
 
 def eod(k, P, RN, U):
 	T = 0.7
-	
+
 	for d in RN:
 		#U.remove(d)
 		U = deleteRow(U, d)
-	    
+
 	for d in U:
 		for p in P:
 			distance = euclidianDistance(d,p)
-			
+
 			if distance > T:
 				#U.remove(d)
 				U =  deleteRow(U,d)
@@ -33,7 +33,7 @@ def eod(k, P, RN, U):
 	#Dnew = U # gotta test this
 	PSize = P.shape[0] # number of rows
 	NOutlier = 0
-	
+
 	for d in Dnew:
 		NOutlier = NOutlier + 1
 
@@ -51,8 +51,12 @@ def eod(k, P, RN, U):
 			if getLabel(di) == 'N':
 				for dj in Dnew:
 					if getLabel(dj) == 'O':
-						pass
-					#exchange the label of N with O and calculate the new entropy
+						#changing labels
+						temp = dj[-1]
+						dj[-1] = di[-1]
+						di[-1] = temp
+						
+						#calculate the new entropy
 
 				#if maximum decrease of entropy achieved
 					#swap the label of di and dj with minimum entropy value
@@ -71,6 +75,10 @@ def deleteRow(Array, row):
     Array = np.delete(Array, sliced, 0)
     return Array
 
+def exchangeLabels(di, dj):
+
+
+
 def euclidianDistance(d,p):
 	#removes the last column, which is the class column, the calculates the euclidian distance
 	columns = len(d)
@@ -78,7 +86,7 @@ def euclidianDistance(d,p):
 	newP = p[0:columns-1]
 
 	return np.linalg.norm(newD-newP)
-	
+
 def getLabel(d):
 
     if d[-1] == 0:
@@ -97,8 +105,8 @@ def putLabel(d, label):
 
     return d
 
-	
-	
+
+
 def main():
 	#print euclidianDistance(np.array([1,1,0]),np.array([2,2,0]))
 	a = np.array([[1,2,3],[4,5,6],[7,8,9]])
