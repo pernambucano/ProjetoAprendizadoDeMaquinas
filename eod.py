@@ -92,7 +92,12 @@ def eod(k, P, RN, U):
 	print ''
 	print '------OUTLIER CANDIDATES---------'
 	# TODO: delete the label and distance columns
-	print outlierCandidates
+	#print outlierCandidates
+
+	# ranking using the -2 column
+	outlierCandidates[outlierCandidates[:,-2].argsort()]
+
+	print outlierCandidates[:, :-3]
 	
 	return outlierCandidates
 
