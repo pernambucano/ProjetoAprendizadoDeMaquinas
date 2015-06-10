@@ -13,7 +13,7 @@ import extractRn as ern
 import sys
 
 def eod(k, P, RN, U):
-	T = 0.7
+	T = 0.06
 	C = ern.getPositiveLabels(P)
 	
 	for d in RN:
@@ -28,9 +28,8 @@ def eod(k, P, RN, U):
 		distanceTotal = 0
 		for p in P:
 			distance = euclidianDistance(d,p)
-			print distance
+			#print distance
 			if distance > T:
-				print 'ENTROU '
 				#U.remove(d)
 				U =  deleteRow(U,d)
 				break
@@ -45,8 +44,8 @@ def eod(k, P, RN, U):
 	NOutlier = 0
 	
 	print ''
-	print '---- Dnew WITH EMPTY LABELS ----'
-	print Dnew
+	#print '---- Dnew WITH EMPTY LABELS ----'
+	#print Dnew
 	for d in Dnew:
 		NOutlier = NOutlier + 1
 
@@ -83,8 +82,8 @@ def eod(k, P, RN, U):
 	outlierCandidates = np.array([]).reshape(0,Ucolumns+1)
 	
 	print ''
-	print '------DNEW AFTER LABELS---------'
-	print Dnew
+	#print '------DNEW AFTER LABELS---------'
+	#print Dnew
 	for d in Dnew:
 		if getLabel(d) == 'O':
 			outlierCandidates = np.vstack([outlierCandidates, d])
@@ -101,6 +100,8 @@ def eod(k, P, RN, U):
 	#outlierCandidates[outlierCandidates[:,-2].argsort()]
 
 	print outlierCandidates[:, :]
+	
+	print calculatePrecision(outlierCandidates, 2)
 	return outlierCandidates
 
 
@@ -161,7 +162,9 @@ def getBreastCancerData():
 	print database1[:5,:]
 	normData = database1[:,:-1]
 	normData = normData / np.linalg.norm(normData)
+	#normData = (normData - normData.min(axis=0)) / normData.ptp(axis=0)
 	normData = np.hstack([normData, database1[:,-1:]])
+	
 	
 	print 'norm'
 	print normData[:5,:]
@@ -174,7 +177,7 @@ def getBreastCancerData():
 		else:
 			malign = np.vstack([malign, d])
 	
-	np.random.shuffle(malign)
+	#np.random.shuffle(malign)
 	
 	reducedMalign = malign [:10,:]
 	P = reducedMalign[:3,:]
@@ -187,6 +190,17 @@ def getBreastCancerData():
 	print U
 	return P, U
 
+def calculatePrecision(outlierCandidates, nonOutlierClass):
+	rows, columns = outlierCandidates.shape
+	nonOutlier = 0.0
+	for d in outlierCandidates:
+		#TODO: ESTOU CONSIDERANDO QUE A CLASSE E A PENULTIMA POSICAO - JA QUE TEM O LABEL
+		if (d[-2] == nonOutlierClass):
+			nonOutlier+= 1
+		
+	return (1.0- (nonOutlier/rows))
+		
+		
 def main():
 	#print euclidianDistance(np.array([1,1,0]),np.array([2,2,0]))
 	a = np.array([[1,2,3],[4,5,6],[7,8,9]])
@@ -199,9 +213,9 @@ def main():
 	normU = U / np.linalg.norm(U)
 	normP = np.array([normU[0,:], normU[1,:]])
 	normRN = ern.extractRn(normP, normU)
-	print '------------U----------------'
+	#print '------------U----------------'
 	#print normU
-	print '------------RN----------------'
+	#print '------------RN----------------'
 	#print normRN
 	#print ern.extractRn((np.array([U[0,:], U[1,:]])), U)
 	#print ern.extractRn((np.array([normU[0,:], normU[1,:]])), normU)
@@ -215,6 +229,7 @@ def main():
 	
 	P , U = getBreastCancerData()
 	RN = ern.extractRn(P,U)
+	
 	eod (10, P, RN, U)
 	
 	#print P
