@@ -61,6 +61,8 @@ def eod(k, P, RN, U):
 				#if maximum decrease of entropy achieved
 					#swap the label of di and dj with minimum entropy value
 
+				# if not, put it back
+
 		#if entropy has not changed
 			#flag = false
 	kOutputs = []
