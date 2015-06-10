@@ -55,7 +55,7 @@ def getEntropy(C,d,P):
 		if(probability != 0):
 			entropy += probability * np.log2(probability)
 
-	return entropy
+	return -entropy
 
 
 def getProbability(C,d,P,classe):
@@ -66,7 +66,7 @@ def getProbability(C,d,P,classe):
 	distance2 = 0
 	for classe in C:
 		for instance in P:
-                        if(instance[-1] == classe): # Paulo>> Pra cada classe teremos um centroid, mas aqui teremos mais centroids do que o # de classes
+			if(instance[-1] == classe): # Paulo>> Pra cada classe teremos um centroid, mas aqui teremos mais centroids do que o # de classes
 				# if the class has at least one item
 				pj = getCenterOfClass(P,classe)
 				distance2 += euclidianDistance (d,pj)
@@ -75,10 +75,10 @@ def getProbability(C,d,P,classe):
 	# probability = distance1/distance2 - when we have just one class, this always returns 1
 
 	#ESSA PARTE TA CONFUSA NO ARTIGO, PRECISA SER REFEITA (CALCULO COM A NORMALIZACAO)
-	if(distance1 == distance2 and distance1 != 0): 			#<--- BUG AQUI, TEM QUE ARRUMAR
-		#probability = distance1;			#<--- BUG AQUI, TEM QUE ARRUMAR
-		probability = 1;
-    elif(distance2 != 0):						 			#<--- BUG AQUI, TEM QUE ARRUMAR
+	if(distance1 == distance2 and distance1 != 0):			#<--- BUG AQUI, TEM QUE ARRUMAR
+		probability = distance1;			#<--- BUG AQUI, TEM QUE ARRUMAR
+		#probability = 1;
+	elif(distance2 != 0):						 			#<--- BUG AQUI, TEM QUE ARRUMAR
 		probability = distance1/distance2 	#<--- BUG AQUI, TEM QUE ARRUMAR
 	else:
 	    probability = 0;
@@ -131,11 +131,3 @@ def getRank(Entropy, U, n):
 	# just return the n first elements
 	return instances[:n]
 
-def main():
-	#print np.array([[1,1,0],[2,2,0]])
-	#print getCenterOfClass((np.array([[1.,1.,0.],[2.,2.,0.]])), 0)
-	#print getProbability([0,1], np.array([2.0,2.5,0.]),(np.array([[1.,1.,0.],[2.,2.,0.]])), 0)
-	print extractRn((np.array([[1.,1.,0.],[2.,2.,0.]])), (np.array([[3.,8.,1.],[1.,1.,0.],[2.,2.,0.], [4.,4.,1.]])))
-
-if __name__ == '__main__':
-    main()

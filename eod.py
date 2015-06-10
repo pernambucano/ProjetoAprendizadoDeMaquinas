@@ -9,21 +9,26 @@
 #
 
 import numpy as np
-
+import extractRn as ern
+import sys
 
 def eod(k, P, RN, U):
 	T = 0.7
-
+	C = ern.getPositiveLabels(P)
+	
 	for d in RN:
 		#U.remove(d)
 		U = deleteRow(U, d)
 
+	print ''
+	print '----U----'
+	print U
 	for d in U:
 		for p in P:
 			distance = euclidianDistance(d,p)
-
 			if distance > T:
 				#U.remove(d)
+				
 				U =  deleteRow(U,d)
 				break
 	# get the shape of U
@@ -33,7 +38,10 @@ def eod(k, P, RN, U):
 	#Dnew = U # gotta test this
 	PSize = P.shape[0] # number of rows
 	NOutlier = 0
-
+	
+	print ''
+	print '---- Dnew WITH EMPTY LABELS ----'
+	print Dnew
 	for d in Dnew:
 		NOutlier = NOutlier + 1
 
@@ -46,28 +54,44 @@ def eod(k, P, RN, U):
 
 	flag = True
 
+	globalEntropy = sys.maxint
+	
 	while flag:
+		flag = False
 		for di in Dnew:
 			if getLabel(di) == 'N':
 				for dj in Dnew:
+				
 					if getLabel(dj) == 'O':
 						#changing labels
-						temp = dj[-1]
-						dj[-1] = di[-1]
-						di[-1] = temp
-
-						#calculate the new entropy
-
-				#if maximum decrease of entropy achieved
-					#swap the label of di and dj with minimum entropy value
-
-		#if entropy has not changed
-			#flag = false
-	kOutputs = []
+						exchangeLabels(di, dj)
+						
+						currentEntropy = getSetEntropyForLabel(C, P, Dnew, 'O')
+						
+						if(currentEntropy < globalEntropy):
+							globalEntropy = currentEntropy
+							flag = True
+						else:
+							#if isn't better, undo
+							exchangeLabels(di, dj)
+	
+	outlierCandidates = np.array([]).reshape(0,Ucolumns+1)
+	
+	print ''
+	print '------DNEW AFTER LABELS---------'
+	print Dnew
+	for d in Dnew:
+		if getLabel(d) == 'O':
+			outlierCandidates = np.vstack([outlierCandidates, d])
+			
 	#select k-PSize with label O
 	#rank k-PSize instances with label O (rank based on the euclidianDistance calculated
-
-	return kOutputs
+	#TODO: FALTA ORDENAR PELA DISTANCIA
+	print ''
+	print '------OUTLIER CANDIDATES---------'
+	print outlierCandidates
+	
+	return outlierCandidates
 
 
 def deleteRow(Array, row):
@@ -76,7 +100,9 @@ def deleteRow(Array, row):
     return Array
 
 def exchangeLabels(di, dj):
-	pass
+		temp = dj[-1]
+		dj[-1] = di[-1]
+		di[-1] = temp
 
 
 def euclidianDistance(d,p):
@@ -105,6 +131,16 @@ def putLabel(d, label):
 
     return d
 
+def getSetEntropyForLabel(C, P, Dnew, label):
+	
+	totalEntropy = 0.0
+	for d in Dnew:
+		if getLabel(d) == label:
+			#removing the label
+			modifiedD = d[0:-2]
+			totalEntropy+= ern.getEntropy(C,modifiedD,P)
+
+	return totalEntropy
 
 
 def main():
@@ -113,5 +149,22 @@ def main():
 	b = np.array([[1,2,0], [2,3,1]])
         for i in b:
             print getLabel(i)
+	
+	U = np.array([[1.,1.,0.],[2.,2.,0.],[6.,8.,1.],[4.,8.,1.],[3.,8.,1.],[4.,4.,1.],[1.,2.,0.],[2.,1.,0.]])
+	
+	normU = U / np.linalg.norm(U)
+	normP = np.array([normU[0,:], normU[1,:]])
+	normRN = ern.extractRn(normP, normU)
+	print '------------U----------------'
+	print normU
+	print '------------RN----------------'
+	print normRN
+	#print ern.extractRn((np.array([U[0,:], U[1,:]])), U)
+	#print ern.extractRn((np.array([normU[0,:], normU[1,:]])), normU)
+	
+	print '------------EOD----------------'
+	print ''
+	eod (6, normP, normRN, normU)
+
 if __name__ == '__main__':
     main()
