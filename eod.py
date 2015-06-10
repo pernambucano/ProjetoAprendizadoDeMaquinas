@@ -25,13 +25,17 @@ def eod(k, P, RN, U):
 	print U
 
 	for d in U:
+		distanceTotal = 0
 		for p in P:
 			distance = euclidianDistance(d,p)
+			print distance
 			if distance > T:
+				print 'ENTROU '
 				#U.remove(d)
 				U =  deleteRow(U,d)
 				break
-			d = np.hstack((d,distance))
+			#distanceTotal += distance
+		#d = np.hstack((d,[distanceTotal]))
 	# get the shape of U
 	Urows, Ucolumns = U.shape
 	# add a last column where we can put the new labels
@@ -94,10 +98,9 @@ def eod(k, P, RN, U):
 	#print outlierCandidates
 
 	# ranking using the -2 column
-	outlierCandidates[outlierCandidates[:,-2].argsort()]
+	#outlierCandidates[outlierCandidates[:,-2].argsort()]
 
 	print outlierCandidates[:, :]
-	
 	return outlierCandidates
 
 
@@ -144,7 +147,7 @@ def getSetEntropyForLabel(C, P, Dnew, label):
 	for d in Dnew:
 		if getLabel(d) == label:
 			#removing the label
-			modifiedD = d[0:-3]
+			modifiedD = d[0:-2]
 			totalEntropy+= ern.getEntropy(C,modifiedD,P)
 
 	return totalEntropy
@@ -154,10 +157,14 @@ def getBreastCancerData():
 	database1 = database1[:, 1:]
 	(rows, columns) = database1.shape
 	
+	print 'db1'
+	print database1[:5,:]
 	normData = database1[:,:-1]
 	normData = normData / np.linalg.norm(normData)
 	normData = np.hstack([normData, database1[:,-1:]])
 	
+	print 'norm'
+	print normData[:5,:]
 	benign = np.array([]).reshape(0,columns)
 	malign = np.array([]).reshape(0,columns)
 	
@@ -193,9 +200,9 @@ def main():
 	normP = np.array([normU[0,:], normU[1,:]])
 	normRN = ern.extractRn(normP, normU)
 	print '------------U----------------'
-	print normU
+	#print normU
 	print '------------RN----------------'
-	print normRN
+	#print normRN
 	#print ern.extractRn((np.array([U[0,:], U[1,:]])), U)
 	#print ern.extractRn((np.array([normU[0,:], normU[1,:]])), normU)
 	
@@ -203,12 +210,15 @@ def main():
 
 	print '------------EOD----------------'
 	print ''
-	eod (6, normP, normRN, normU)
+	#eod (6, normP, normRN, normU)
 	
 	
 	P , U = getBreastCancerData()
 	RN = ern.extractRn(P,U)
-	eod (13, P, RN, U)
+	eod (10, P, RN, U)
+	
+	#print P
+	#print RN
 	
 
 
