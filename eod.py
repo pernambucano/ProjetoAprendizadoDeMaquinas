@@ -152,6 +152,36 @@ def getSetEntropyForLabel(C, P, Dnew, label):
 
 	return totalEntropy
 
+def getBreastCancerData():
+	database1 = np.loadtxt('data/breast-cancer-wisconsin.data',delimiter=',')
+	database1 = database1[:, 1:]
+	(rows, columns) = database1.shape
+	
+	normData = database1[:,:-1]
+	normData = normData / np.linalg.norm(normData)
+	normData = np.hstack([normData, database1[:,-1:]])
+	
+	benign = np.array([]).reshape(0,columns)
+	malign = np.array([]).reshape(0,columns)
+	
+	for d in normData:
+		if d[-1] == 2:
+			benign = np.vstack([benign, d])
+		else:
+			malign = np.vstack([malign, d])
+	
+	np.random.shuffle(malign)
+	
+	reducedMalign = malign [:10,:]
+	P = reducedMalign[:3,:]
+	U = np.vstack([benign,reducedMalign])
+	np.random.shuffle(U)
+	
+	print ' --- P ---'
+	print P
+	print '--- U ---'
+	print U
+	return P, U
 
 def main():
 	#print euclidianDistance(np.array([1,1,0]),np.array([2,2,0]))
@@ -172,9 +202,11 @@ def main():
 	#print ern.extractRn((np.array([U[0,:], U[1,:]])), U)
 	#print ern.extractRn((np.array([normU[0,:], normU[1,:]])), normU)
 	
+	getBreastCancerData()
+
 	print '------------EOD----------------'
 	print ''
-	eod (6, normP, normRN, normU)
+	#eod (6, normP, normRN, normU)
 
 
 if __name__ == '__main__':
