@@ -20,17 +20,19 @@ def eod(k, P, RN, U):
 		#U.remove(d)
 		U = deleteRow(U, d)
 
-	print ''
+	print
 	print '----U----'
 	print U
+
+	listOfDistances = []
 	for d in U:
 		for p in P:
 			distance = euclidianDistance(d,p)
 			if distance > T:
 				#U.remove(d)
-				
 				U =  deleteRow(U,d)
 				break
+			d = np.hstack((d,distance))
 	# get the shape of U
 	Urows, Ucolumns = U.shape
 	# add a last column where we can put the new labels
@@ -89,6 +91,7 @@ def eod(k, P, RN, U):
 	#TODO: FALTA ORDENAR PELA DISTANCIA
 	print ''
 	print '------OUTLIER CANDIDATES---------'
+	# TODO: delete the label and distance columns
 	print outlierCandidates
 	
 	return outlierCandidates
@@ -137,7 +140,7 @@ def getSetEntropyForLabel(C, P, Dnew, label):
 	for d in Dnew:
 		if getLabel(d) == label:
 			#removing the label
-			modifiedD = d[0:-2]
+			modifiedD = d[0:-3]
 			totalEntropy+= ern.getEntropy(C,modifiedD,P)
 
 	return totalEntropy
@@ -165,6 +168,7 @@ def main():
 	print '------------EOD----------------'
 	print ''
 	eod (6, normP, normRN, normU)
+
 
 if __name__ == '__main__':
     main()
