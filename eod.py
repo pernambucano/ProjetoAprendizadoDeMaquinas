@@ -25,6 +25,7 @@ def eod(k, P, RN, U):
 	print U
 
 	listOfDistances = []
+	distanceTotal = 0
 	for d in U:
 		for p in P:
 			distance = euclidianDistance(d,p)
@@ -32,7 +33,8 @@ def eod(k, P, RN, U):
 				#U.remove(d)
 				U =  deleteRow(U,d)
 				break
-			d = np.hstack((d,distance))
+			distanceTotal += distance
+		d = np.hstack((d,[distanceTotal]))
 	# get the shape of U
 	Urows, Ucolumns = U.shape
 	# add a last column where we can put the new labels
@@ -98,7 +100,7 @@ def eod(k, P, RN, U):
 	outlierCandidates[outlierCandidates[:,-2].argsort()]
 
 	print outlierCandidates[:, :-3]
-	
+
 	return outlierCandidates
 
 
