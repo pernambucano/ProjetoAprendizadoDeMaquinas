@@ -24,7 +24,6 @@ def eod(k, P, RN, U):
 	print '----U----'
 	print U
 
-	listOfDistances = []
 	for d in U:
 		for p in P:
 			distance = euclidianDistance(d,p)
@@ -97,7 +96,7 @@ def eod(k, P, RN, U):
 	# ranking using the -2 column
 	outlierCandidates[outlierCandidates[:,-2].argsort()]
 
-	print outlierCandidates[:, :-3]
+	print outlierCandidates[:, :]
 	
 	return outlierCandidates
 
@@ -200,11 +199,17 @@ def main():
 	#print ern.extractRn((np.array([U[0,:], U[1,:]])), U)
 	#print ern.extractRn((np.array([normU[0,:], normU[1,:]])), normU)
 	
-	getBreastCancerData()
+	#getBreastCancerData()
 
 	print '------------EOD----------------'
 	print ''
-	#eod (6, normP, normRN, normU)
+	eod (6, normP, normRN, normU)
+	
+	
+	P , U = getBreastCancerData()
+	RN = ern.extractRn(P,U)
+	eod (13, P, RN, U)
+	
 
 
 if __name__ == '__main__':
