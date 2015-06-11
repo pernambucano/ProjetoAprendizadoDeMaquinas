@@ -10,7 +10,7 @@ import numpy as np
 def extractRn(P, U):
 	rowsU, columnsU = U.shape
 	C = getPositiveLabels(P)
-	n = 2  # numero de instancias que queremos ## Possivel mudanca pra porcentagem
+	n = 0.3  # numero de instancias que queremos ## Possivel mudanca pra porcentagem
 	L = np.array(columnsU + 1) # lista de exemplos + a entropia
 
 	Entropy = []
@@ -18,7 +18,7 @@ def extractRn(P, U):
 		Entropy.append(getEntropy(C,d,P))
 
 	rn = getRank(Entropy, U, n)
-
+	print len(rn)
 	# rn e uma lista de python
 	# se for necessario transformar em um numpy.array:
 	#	rn = np.array(rn)
@@ -129,5 +129,6 @@ def getRank(Entropy, U, n):
 		instances.append(U[i])
 
 	# just return the n first elements
-	return instances[:n]
+	rows = len(instances)
+	return instances[0:int(rows*n)]
 
