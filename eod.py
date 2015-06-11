@@ -17,11 +17,11 @@ import matplotlib.pyplot as plt
 
 
 def eod(k, P, RN, U):
-	T =  0.9
+	T =  0.7
 	C = ern.getPositiveLabels(P)
 	print '---U---'
 	print U.shape
-	printGraph(U, 'initial U')
+
 	for d in RN:
 		#U.remove(d)
 		U = deleteRow(U, d)
@@ -219,7 +219,10 @@ def calculatePrecision(outlierCandidates, nonOutlierClass):
 
 	return (1.0- (nonOutlier/rows))
 
-
+def normalize(T):
+	norm =   (T[:, :-1] - T[:, :-1].min(axis=0)) / T[:,:-1].ptp(axis=0)
+	norm = np.hstack([norm, T[:, -1:]])
+	return norm
 def main():
 	#print euclidianDistance(np.array([1,1,0]),np.array([2,2,0]))
 	#a = np.array([[1,2,3],[4,5,6],[7,8,9]])
@@ -261,18 +264,28 @@ def main():
 	class2_rows, class2_columns = class2_sample.shape
 	class2_sample = np.c_[class2_sample, np.ones(class2_rows)]
 
-
-	P = class2_sample[:3,:]
-	U = np.vstack([class1_sample, class2_sample])
+	norm_class1 = normalize(class1_sample)
+	norm_class2 = normalize(class2_sample)
+	P = norm_class2[:3,:]
+	print class2_sample
+	print norm_class2
+	print 'P', P
+	U = np.vstack([norm_class1, norm_class2])
 	np.random.shuffle(U)
-	normU = U / np.linalg.norm(U)
-	normP = P / np.linalg.norm(P)
-	normRN = ern.extractRn(normP,normU)
+	# normU = U / np.linalg.norm(U)
+
+	# normP = P / np.linalg.norm(P)
+
+	# normU = normalize(U)
+	# normP = normalize(P)
+	# print normP
+	# normRN = ern.extractRn(normP,normU)
 
 	# P , U = getBreastCancerData()
-	# RN = ern.extractRn(P,U)
+	RN = ern.extractRn(P,U)
 
-	result = eod (10, normP, normRN, normU)
+	# result = eod (10, normP, normRN, normU)
+	result = eod (13, P, RN, U)
 
 	printGraph(result, 'Final result')
 
