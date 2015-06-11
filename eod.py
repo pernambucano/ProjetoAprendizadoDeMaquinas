@@ -31,15 +31,20 @@ def eod(k, P, RN, U):
 	print '----U After RN----'
 	print U.shape
 
+	# It will delete d if only d is far from every outlier, i.e. distance(d, All Outliers) > T
 	for d in U:
-		distanceTotal = 0
+		isFar = True
 		for p in P:
 			distance = euclidianDistance(d, p)
-			if distance > T:
-				#U.remove(d)
-				U =  deleteRow(U,d)
+			if distance <= T:
+				isFar = False
 				break
-			#distanceTotal += distance
+
+		if isFar:
+			#U.remove(d)
+			print 'removing ', d
+			U =  deleteRow(U,d)
+			continue
 		#d = np.hstack((d,[distanceTotal]))
 
 
@@ -52,9 +57,9 @@ def eod(k, P, RN, U):
 	PSize = P.shape[0] # number of rows
 	NOutlier = 0
 
-	print ''
-	print '---- Dnew WITH EMPTY LABELS ----'
-	print Dnew
+	# print ''
+	# print '---- Dnew WITH EMPTY LABELS ----'
+	# print Dnew
 	for d in Dnew:
 		NOutlier = NOutlier + 1
 
@@ -267,6 +272,7 @@ def main():
 	norm_class1 = normalize(class1_sample)
 	# norm_class2 = normalize(class2_sample)
 	norm_class2 = np.array([[0.9, 0.9, 0.9, 1], [0.91, 0.91, 0.91, 1], [0.92, 0.92, 0.92, 1], [0.01, 0.01, 0.01, 1], [0.02, 0.02, 0.02,1] , [0.03,0.03,0.03, 1], [0.04,0.04,0.04,1],[0.94,0.94,0.94,1], [0.05,0.05,0.05,1], [1,1,1,1]])
+	np.random.shuffle(norm_class2)
 	P = norm_class2[:3,:]
 	print norm_class2
 	print 'P', P
