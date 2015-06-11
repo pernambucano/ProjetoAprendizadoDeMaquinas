@@ -6,6 +6,7 @@
 #		rn - Reliable negative examples set
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 def extractRn(P, U):
 	rowsU, columnsU = U.shape
@@ -43,9 +44,6 @@ def getPositiveLabels(P):
 #		C - class labels
 #		d - current instance
 #		P - positive instances
-
-#	Output:
-#		rn - Reliable negative examples set
 def getEntropy(C,d,P):
 
 	entropy = 0
@@ -76,12 +74,12 @@ def getProbability(C,d,P,classe):
 
 	#ESSA PARTE TA CONFUSA NO ARTIGO, PRECISA SER REFEITA (CALCULO COM A NORMALIZACAO)
 	if(distance1 == distance2 and distance1 != 0):			#<--- BUG AQUI, TEM QUE ARRUMAR
-		probability = distance1;			#<--- BUG AQUI, TEM QUE ARRUMAR
+		probability = distance1			#<--- BUG AQUI, TEM QUE ARRUMAR
 		#probability = 1;
 	elif(distance2 != 0):						 			#<--- BUG AQUI, TEM QUE ARRUMAR
 		probability = distance1/distance2 	#<--- BUG AQUI, TEM QUE ARRUMAR
 	else:
-	    probability = 0;
+	    probability = 0
 
 	return probability
 
@@ -131,4 +129,3 @@ def getRank(Entropy, U, n):
 	# just return the n first elements
 	rows = len(instances)
 	return instances[0:int(rows*n)]
-
