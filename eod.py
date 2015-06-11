@@ -34,7 +34,7 @@ def eod(k, P, RN, U):
 	for d in U:
 		distanceTotal = 0
 		for p in P:
-			distance = euclidianDistance(d,p)
+			distance = euclidianDistance(d, p)
 			if distance > T:
 				#U.remove(d)
 				U =  deleteRow(U,d)
@@ -53,8 +53,8 @@ def eod(k, P, RN, U):
 	NOutlier = 0
 
 	print ''
-	#print '---- Dnew WITH EMPTY LABELS ----'
-	#print Dnew
+	print '---- Dnew WITH EMPTY LABELS ----'
+	print Dnew
 	for d in Dnew:
 		NOutlier = NOutlier + 1
 
@@ -257,21 +257,22 @@ def main():
 	class1_rows, class1_columns = class1_sample.shape
 	class1_sample = np.c_[class1_sample, np.zeros(class1_rows)]
 
-	mu_vec2 = np.array([1,1,1])
-	cov_mat2 = np.array([[1,0,0],[0,1,0],[0,0,1]])
-	class2_sample = np.random.multivariate_normal(mu_vec2, cov_mat2, 10).T
-	class2_sample =  class2_sample.T
-	class2_rows, class2_columns = class2_sample.shape
-	class2_sample = np.c_[class2_sample, np.ones(class2_rows)]
+	# mu_vec2 = np.array([1,1,1])
+	# cov_mat2 = np.array([[1,0,0],[0,1,0],[0,0,1]])
+	# class2_sample = np.random.multivariate_normal(mu_vec2, cov_mat2, 10).T
+	# class2_sample =  class2_sample.T
+	# class2_rows, class2_columns = class2_sample.shape
+	# class2_sample = np.c_[class2_sample, np.ones(class2_rows)]
 
 	norm_class1 = normalize(class1_sample)
-	norm_class2 = normalize(class2_sample)
+	# norm_class2 = normalize(class2_sample)
+	norm_class2 = np.array([[0.9, 0.9, 0.9, 1], [0.91, 0.91, 0.91, 1], [0.92, 0.92, 0.92, 1], [0.01, 0.01, 0.01, 1], [0.02, 0.02, 0.02,1] , [0.03,0.03,0.03, 1], [0.04,0.04,0.04,1],[0.94,0.94,0.94,1], [0.05,0.05,0.05,1], [1,1,1,1]])
 	P = norm_class2[:3,:]
-	print class2_sample
 	print norm_class2
 	print 'P', P
 	U = np.vstack([norm_class1, norm_class2])
 	np.random.shuffle(U)
+	printGraph(U, 'U before anything')
 	# normU = U / np.linalg.norm(U)
 
 	# normP = P / np.linalg.norm(P)
