@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 
 def eod(k, P, RN, U):
-	T =  0.7
+	T = 0.7
 	C = ern.getPositiveLabels(P)
 	print '---U---'
 	print U.shape
@@ -31,7 +31,7 @@ def eod(k, P, RN, U):
 	print '----U After RN----'
 	print U.shape
 
-	# It will delete d if only d is far from every outlier, i.e. distance(d, All Outliers) > T
+	# It will delete d if only if d is far from every outlier, i.e. distance(d, All Outliers) > T
 	for d in U:
 		isFar = True
 		for p in P:
@@ -44,7 +44,7 @@ def eod(k, P, RN, U):
 			#U.remove(d)
 			print 'removing ', d
 			U =  deleteRow(U,d)
-			continue
+
 		#d = np.hstack((d,[distanceTotal]))
 
 
@@ -74,9 +74,29 @@ def eod(k, P, RN, U):
 
 	globalEntropy = sys.maxint
 
+	# while flag:
+	# 	flag = False
+	# 	for di in Dnew:
+	# 		if getLabel(di) == 'N':
+	# 			for dj in Dnew:
+	#
+	# 				if getLabel(dj) == 'O':
+	# 					#changing labels
+	# 					exchangeLabels(di, dj)
+	#
+	# 					currentEntropy = getSetEntropyForLabel(C, P, Dnew, 'O')
+	#
+	# 					if(currentEntropy < globalEntropy):
+	# 						globalEntropy = currentEntropy
+	# 						flag = True
+	# 					else:
+	# 						#if isn't better, undo
+	# 						exchangeLabels(di, dj)
+
 	while flag:
 		flag = False
 		for di in Dnew:
+			maximumDecreaseAchieved = False
 			if getLabel(di) == 'N':
 				for dj in Dnew:
 
@@ -96,8 +116,8 @@ def eod(k, P, RN, U):
 	outlierCandidates = np.array([]).reshape(0,Ucolumns+1)
 
 	print ''
-	#print '------DNEW AFTER LABELS---------'
-	#print Dnew
+	print '------DNEW AFTER LABELS---------'
+	print Dnew
 	for d in Dnew:
 		if getLabel(d) == 'O':
 			outlierCandidates = np.vstack([outlierCandidates, d])

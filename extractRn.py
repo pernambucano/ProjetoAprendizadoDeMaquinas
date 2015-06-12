@@ -6,7 +6,6 @@
 #		rn - Reliable negative examples set
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 def extractRn(P, U):
 	rowsU, columnsU = U.shape
@@ -58,17 +57,22 @@ def getEntropy(C,d,P):
 
 def getProbability(C,d,P,classe):
 
-	pj = getCenterOfClass(P,classe)
-	distance1 = euclidianDistance (d,pj)
+	#pj = getCenterOfClass(P,classe)
+	distance1 =  10000
+        for pj in P:
+            dist_temp = euclidianDistance (d,pj)
+            if dist_temp < distance1:
+                distance1 = dist_temp
 
-	distance2 = 0
+	distance2 = 10000
 	for classe in C:
 		for instance in P:
-			if(instance[-1] == classe): # Paulo>> Pra cada classe teremos um centroid, mas aqui teremos mais centroids do que o # de classes
-				# if the class has at least one item
-				pj = getCenterOfClass(P,classe)
-				distance2 += euclidianDistance (d,pj)
-				break
+                            # if the class has at least one item
+                            #pj = getCenterOfClass(P,classe)
+                            #distance2 += euclidianDistance (d,instance)
+                            dist_temp = euclidianDistance(d,instance)
+                            if dist_temp < distance2:
+                                distance2 = dist_temp
 
 	# probability = distance1/distance2 - when we have just one class, this always returns 1
 
