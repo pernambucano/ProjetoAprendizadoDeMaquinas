@@ -9,7 +9,7 @@
 #
 
 import numpy as np
-import extractRn as ern
+import newExtractRN as ern
 import sys
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d import proj3d
@@ -22,11 +22,15 @@ def eod(k, P, RN, U):
 	print '---U---'
 	print U.shape
 
+        counter = 0
 	for d in RN:
+	        if d[-1] == 4:
+	            counter +=1
 		#U.remove(d)
-		U = deleteRow(U, d)
+                U = deleteRow(U, d)
 
-	printGraph(U, 'U after RN')
+        print 'positive deleted', counter
+	##printGraph(U, 'U after RN')
 	print
 	print '----U After RN----'
 	print U.shape
@@ -34,21 +38,23 @@ def eod(k, P, RN, U):
 	# It will delete d if only if d is far from every outlier, i.e. distance(d, All Outliers) > T
 	for d in U:
 		isFar = True
+		minimumDistance = 10000
 		for p in P:
+		        # if p != d
 			distance = euclidianDistance(d, p)
-			if distance <= T:
-				isFar = False
-				break
+			if distance < minimumDistance:
+			    minimumDistance = distance
 
-		if isFar:
+		if minimumDistance > T:
 			#U.remove(d)
-			print 'removing ', d
-			U =  deleteRow(U,d)
+                        #print 'removing ', d
+                    #   if d[-1] != 4:
+            			U =  deleteRow(U,d)
 
 		#d = np.hstack((d,[distanceTotal]))
 
-
-	printGraph(U, 'U after distance')
+        print 'U after distance', U.shape
+	#printGraph(U, 'U after distance')
 	# get the shape of U
 	Urows, Ucolumns = U.shape
 	# add a last column where we can put the new labels
@@ -150,6 +156,8 @@ def exchangeLabels(di, dj):
 		di[-1] = temp
 
 def printGraph(T, title):
+        sliced = np.where(np.all(T[-1]==2, axis=0))
+        print sliced
 	fig = plt.figure(figsize=(8,8))
 	ax = fig.add_subplot(111, projection='3d')
 	ax.plot(T[:,0], T[:,1], T[:,2],
@@ -165,7 +173,6 @@ def euclidianDistance(d,p):
 	columns = len(d)
 	newD = d[0:columns-1]
 	newP = p[0:columns-1]
-
 	return np.linalg.norm(newD-newP)
 
 def getLabel(d):
@@ -204,11 +211,11 @@ def getBreastCancerData():
 
 	print 'db1'
 	print database1[:5,:]
-	normData = database1[:,:-1]
-	normData = normData / np.linalg.norm(normData)
+	#normData = database1[:,:-1]
+	#normData = normData / np.linalg.norm(normData)
 	#normData = (normData - normData.min(axis=0)) / normData.ptp(axis=0)
-	normData = np.hstack([normData, database1[:,-1:]])
-
+	#normData = np.hstack([normData, database1[:,-1:]])
+	normData = normalize(database1)
 
 	print 'norm'
 	print normData[:5,:]
@@ -221,10 +228,14 @@ def getBreastCancerData():
 		else:
 			malign = np.vstack([malign, d])
 
-	#np.random.shuffle(malign)
+	np.random.shuffle(malign)
+
 
 	reducedMalign = malign [:10,:]
+
+    	print 'benign ', benign.shape
 	P = reducedMalign[:3,:]
+    	benign = benign[:357,:]
 	U = np.vstack([benign,reducedMalign])
 	np.random.shuffle(U)
 
@@ -246,7 +257,9 @@ def calculatePrecision(outlierCandidates, nonOutlierClass):
 
 def normalize(T):
 	norm =   (T[:, :-1] - T[:, :-1].min(axis=0)) / T[:,:-1].ptp(axis=0)
+        print 'norm here', norm[:3]
 	norm = np.hstack([norm, T[:, -1:]])
+        print norm[:3]
 	return norm
 def main():
 	#print euclidianDistance(np.array([1,1,0]),np.array([2,2,0]))
@@ -282,39 +295,45 @@ def main():
 	class1_rows, class1_columns = class1_sample.shape
 	class1_sample = np.c_[class1_sample, np.zeros(class1_rows)]
 
-	# mu_vec2 = np.array([1,1,1])
-	# cov_mat2 = np.array([[1,0,0],[0,1,0],[0,0,1]])
-	# class2_sample = np.random.multivariate_normal(mu_vec2, cov_mat2, 10).T
-	# class2_sample =  class2_sample.T
-	# class2_rows, class2_columns = class2_sample.shape
-	# class2_sample = np.c_[class2_sample, np.ones(class2_rows)]
+	mu_vec2 = np.array([1,1,1])
+	cov_mat2 = np.array([[1,0,0],[0,1,0],[0,0,1]])
+	class2_sample = np.random.multivariate_normal(mu_vec2, cov_mat2, 10).T
+	class2_sample =  class2_sample.T
+	class2_rows, class2_columns = class2_sample.shape
+	class2_sample = np.c_[class2_sample, np.ones(class2_rows)]
 
 	norm_class1 = normalize(class1_sample)
-	# norm_class2 = normalize(class2_sample)
-	norm_class2 = np.array([[0.9, 0.9, 0.9, 1], [0.91, 0.91, 0.91, 1], [0.92, 0.92, 0.92, 1], [0.01, 0.01, 0.01, 1], [0.02, 0.02, 0.02,1] , [0.03,0.03,0.03, 1], [0.04,0.04,0.04,1],[0.94,0.94,0.94,1], [0.05,0.05,0.05,1], [1,1,1,1]])
+	#norm_class2 = np.array([[0.9, 0.9, 0.9, 1], [0.91, 0.91, 0.91, 1], [0.92, 0.92, 0.92, 1], [0.01, 0.01, 0.01, 1], [0.02, 0.02, 0.02,1] , [0.03,0.03,0.03, 1], [0.04,0.04,0.04,1],[0.94,0.94,0.94,1], [0.05,0.05,0.05,1], [1,1,1,1]])
+	norm_class2 = normalize(class2_sample)
 	np.random.shuffle(norm_class2)
+
 	P = norm_class2[:3,:]
-	print norm_class2
-	print 'P', P
-	U = np.vstack([norm_class1, norm_class2])
-	np.random.shuffle(U)
-	printGraph(U, 'U before anything')
-	# normU = U / np.linalg.norm(U)
-
-	# normP = P / np.linalg.norm(P)
-
-	# normU = normalize(U)
-	# normP = normalize(P)
-	# print normP
+	#print 'P', P
+	#U = np.vstack([norm_class1, norm_class2])
+	#np.random.shuffle(U)
+	##printGraph(U, 'U before anything')
 	# normRN = ern.extractRn(normP,normU)
-
-	# P , U = getBreastCancerData()
-	RN = ern.extractRn(P,U)
+	# fig = plt.figure(figsize=(8,8))
+	# ax = fig.add_subplot(111, projection='3d')
+	# ax.plot(class2_sample[:,0], class2_sample[:,1], class2_sample[:,2],
+	#         '^', markersize=8, alpha=0.5, color='red', label='class2')
+    #     ax.plot(class1_sample[:,0], class1_sample[:,1], class1_sample[:,2],
+    #     '^', markersize=8, alpha=0.5, color='blue', label='class1')
+	#
+	#
+	# ax.legend(loc='upper right')
+	#
+	# plt.show()
+	#P , U = getBreastCancerData()
 
 	# result = eod (10, normP, normRN, normU)
+	#P, U = getBreastCancerData()
+	U = np.vstack([norm_class1, norm_class2])
+	np.random.shuffle(U)
+	RN = ern.newExtractRN(P,U)
 	result = eod (13, P, RN, U)
 
-	printGraph(result, 'Final result')
+	#printGraph(result, 'Final result')
 
 	#print P
 	#print RN
