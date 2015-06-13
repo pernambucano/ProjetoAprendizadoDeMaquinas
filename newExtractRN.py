@@ -30,6 +30,7 @@ def getEntropy(positiveLabels, di, P):
     return entropy
 
 def getProbability(positiveLabels, di, P, classLabel):
+    probability = 0
     distance_numerator = 1000
     for pj in P:
         dist_temp = euclidianDistance(di, pj)
@@ -41,8 +42,8 @@ def getProbability(positiveLabels, di, P, classLabel):
         for p in P:
             dist_temp = euclidianDistance(di, pj)
             distance_denominator += dist_temp
-
-    probability = distance_numerator/distance_denominator
+    if distance_denominator != 0:
+        probability = distance_numerator/distance_denominator
     return probability
 
 def euclidianDistance(d, p):

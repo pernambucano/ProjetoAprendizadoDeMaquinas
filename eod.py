@@ -327,8 +327,8 @@ def main():
 	#P , U = getBreastCancerData()
 
 	# result = eod (10, normP, normRN, normU)
-	#P, U = getBreastCancerData()
-	U = np.vstack([norm_class1, norm_class2])
+	P, U = getBreastCancerData()
+	#U = np.vstack([norm_class1, norm_class2])
 	np.random.shuffle(U)
 	RN = ern.newExtractRN(P,U)
 	result = eod (13, P, RN, U)
