@@ -7,9 +7,13 @@ def newEod(k, P, RN, U):
     T = 0.7
     positiveLabels = ern.getPositiveLabels(P)
 
+    counter = 0
     for di in RN:
+        if di[-1] == 4:
+            counter += 1
         U = deleteRow(U, di)
 
+    print 'foram deletados', counter, ' exemplos positivos'
     for di in U:
         minimumDistance = 1000
         for p in P:
@@ -111,6 +115,7 @@ def getBreastCancerData():
 	database1 = np.loadtxt('data/breast-cancer-wisconsin.data',delimiter=',')
 	database1 = database1[:, 1:]
 	(rows, columns) = database1.shape
+
 
 	normData = normalize(database1)
 
