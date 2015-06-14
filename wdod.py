@@ -142,6 +142,14 @@ def getBreastCancerData():
 	database1 = database1[:, 1:]
 
 	return database1
+	
+def getLymphographyData():
+	U = np.loadtxt('data/lymphography.all',delimiter=',')
+	U = U[:,:] # removing the class label
+
+	rows,columns = U.shape
+	A = range(0,columns)
+	return U,A
 
 def getTestData():
 	U = np.array([["A","E","M"],["A","D","N"],["B","G","M"],["C","D","N"],["C","G","M"],["C","F","N"]])
@@ -178,8 +186,9 @@ def paperTest(U,A):
 def main():
 
 	U,A = getTestData()	
+	#U,A = getLymphographyData()	
 	#paperTest(U,A)
-	WDOD(U,A,0.4)
+	#WDOD(U,A,0.4)
 	WDODOtimizado(U,A,0.4)
 
 	
