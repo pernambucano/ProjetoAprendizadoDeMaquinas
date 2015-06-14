@@ -135,6 +135,7 @@ def WDODOtimizado(U,A,threshold):
 		if density < threshold:
 			outliers = np.vstack([outliers, x])
 	
+	print 'Outliers candidates'
 	print outliers
 	return outliers
 	
@@ -224,18 +225,20 @@ def main():
 	#WDOD(U,A,0.4)
 	
 	DATA,U,A = getLymphographyData()
-	outliers = WDODOtimizado(U,A,0.4) # - 4 unidades no lymph
-	#outliers = WDODOtimizado(U,A,0.50)# - 8 unidades no lymph
+	outliers = WDODOtimizado(U,A,0.4) # - 4/4 unidades no lymph
+	#outliers = WDODOtimizado(U,A,0.50)# - 6/8 unidades no lymph
 	#outliers = WDODOtimizado(U,A,0.53)# - 12 unidades no lymph
 	#outliers = WDODOtimizado(U,A,0.541)# - 15 unidades no lymph
+	print 'Classe dos outliers'
 	print(getClassOfOutliers(outliers, DATA))
-	
+	print
 	
 	DATA,U,A = getBreastCancerData()
-	#outliers = WDODOtimizado(U,A,0.041) # - 5 unidades no breast
-	outliers = WDODOtimizado(U,A,0.049) # -
+	#outliers = WDODOtimizado(U,A,0.041) # - 5/5
+	outliers = WDODOtimizado(U,A,0.049) # - 15/16
+	print 'Classe dos outliers'
 	print(getClassOfOutliers(outliers, DATA))
-	
+	print
 
 	
 if __name__ == '__main__':
