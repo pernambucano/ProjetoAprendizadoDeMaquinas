@@ -164,6 +164,22 @@ def getClassOfOutliers (outliers, data):
 			
 	return classList
 
+def getClassOfOutliersReversed (outliers, data):
+
+	classList = []
+	rows, columns = data.shape
+	
+	for outlier in outliers:
+		for element in data:
+			elementWithoutClass = element
+			elementWithoutClass = np.delete(elementWithoutClass,[0])
+
+			if np.array_equal(outlier,elementWithoutClass):
+				classList.append(element[-1])
+				break
+			
+	return classList
+	
 def getBreastCancerData():
 	DATA = np.loadtxt('data/breast-cancer-wisconsin2.data',delimiter=',')
 	DATA = DATA[:, 1:] # removes the first columns
