@@ -114,6 +114,7 @@ def WDOD(U,A,threshold):
 			outliers = np.vstack([outliers, x])
 	
 	print outliers
+	return outliers
 	
 def WDODOtimizado(U,A,threshold):
 
@@ -135,21 +136,54 @@ def WDODOtimizado(U,A,threshold):
 			outliers = np.vstack([outliers, x])
 	
 	print outliers
+	return outliers
+	
+def getClassList(matrix, classPosition):
+	
+	classList = []
+	
+	for x in matrix:
+		classList.append(x[classPosition])
+		
+	return classList
+	
+def getClassOfOutliers (outliers, data):
 
+	classList = []
+	rows, columns = data.shape
+	
+	for outlier in outliers:
+		for element in data:
+			elementWithoutClass = element
+			elementWithoutClass = np.delete(elementWithoutClass,[columns-1])
+
+			if np.array_equal(outlier,elementWithoutClass):
+				classList.append(element[-1])
+				break
+			
+	return classList
 
 def getBreastCancerData():
-	database1 = np.loadtxt('data/breast-cancer-wisconsin.data',delimiter=',')
-	database1 = database1[:, 1:]
-
-	return database1
+	DATA = np.loadtxt('data/breast-cancer-wisconsin2.data',delimiter=',')
+	DATA = DATA[:, 1:] # removes the first columns
 	
-def getLymphographyData():
-	U = np.loadtxt('data/lymphography.all',delimiter=',')
-	U = U[:,:] # removing the class label
-
+	U = DATA[:, :-1]
 	rows,columns = U.shape
 	A = range(0,columns)
-	return U,A
+	
+	return DATA,U,A
+	
+#NO LYMPH, AS RARE CLASSES SAO 1 e 4
+def getLymphographyData():
+	#data with class
+	DATA = np.loadtxt('data/lymphography.all',delimiter=',')
+
+	#U Without class
+	U = DATA[:, :-1]
+	rows,columns = U.shape
+	A = range(0,columns)
+	
+	return DATA,U,A
 
 def getTestData():
 	U = np.array([["A","E","M"],["A","D","N"],["B","G","M"],["C","D","N"],["C","G","M"],["C","F","N"]])
@@ -185,11 +219,23 @@ def paperTest(U,A):
 	
 def main():
 
-	U,A = getTestData()	
-	#U,A = getLymphographyData()	
+	#U,A = getTestData()
 	#paperTest(U,A)
 	#WDOD(U,A,0.4)
-	WDODOtimizado(U,A,0.4)
+	
+	DATA,U,A = getLymphographyData()
+	outliers = WDODOtimizado(U,A,0.4) # - 4 unidades no lymph
+	#outliers = WDODOtimizado(U,A,0.50)# - 8 unidades no lymph
+	#outliers = WDODOtimizado(U,A,0.53)# - 12 unidades no lymph
+	#outliers = WDODOtimizado(U,A,0.541)# - 15 unidades no lymph
+	print(getClassOfOutliers(outliers, DATA))
+	
+	
+	DATA,U,A = getBreastCancerData()
+	#outliers = WDODOtimizado(U,A,0.041) # - 5 unidades no breast
+	outliers = WDODOtimizado(U,A,0.049) # -
+	print(getClassOfOutliers(outliers, DATA))
+	
 
 	
 if __name__ == '__main__':
