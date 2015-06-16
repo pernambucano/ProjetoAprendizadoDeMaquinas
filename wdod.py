@@ -1,7 +1,7 @@
 from __future__ import division
 import time
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 def UInd(a, U):
 
@@ -235,27 +235,68 @@ def getDataWithMultipliedRowsAndColumns(U, horizontalFactor, verticalFactor):
 def rowsTest():
 	DATA,U,A = getLymphographyData()
 	print
+	
+	numberOfRows = []
+	times = []
 	for x in range (1,10):
 		
 		thousandRows = getDataWithMultipliedRowsAndColumns(U,7*x,0)
 		rows, columns = thousandRows.shape
 		print rows, "rows"
+		numberOfRows.append(rows)
 		start_time = time.clock()
 		outliers = WDODOtimizado(thousandRows,A,0.4)
-		print time.clock() - start_time, "seconds"
+		end_time = time.clock() - start_time
+		print end_time, "seconds"
+		times.append(end_time)
+	
+	plt.xlabel('Number of object')
+	plt.ylabel('Execution time in seconds')
+	plt.title('Performance Test')
+	plt.plot(numberOfRows, times, 'ro')
+	plt.axis([0, 10000, 0, 6000])
+	plt.show()
+	
+	plt.xlabel('Number of object')
+	plt.ylabel('Execution time in seconds')
+	plt.title('Performance Test')
+	plt.plot(numberOfRows, times, 'ro')
+	plt.axis([0, 10000, 0, 5])
+	plt.show()
 		
 
 def columnsTest():
 	DATA,U,A = getLymphographyData()
 	print
-	for x in range (1,5):
+	
+	numberOfColumns = []
+	times = []
+	
+	for x in range (1,4):
 		
 		thousandColumns = getDataWithMultipliedRowsAndColumns(U,0,x)
 		rows, columns = thousandColumns.shape
 		print columns, "columns"
+		numberOfColumns.append(columns)
 		start_time = time.clock()
 		outliers = WDODOtimizado(thousandColumns,A,0.4)
-		print time.clock() - start_time, "seconds"		
+		end_time = time.clock() - start_time
+		print end_time, "seconds"
+		times.append(end_time)
+
+	plt.xlabel('Number of Attributes')
+	plt.ylabel('Execution time in seconds')
+	plt.title('Performance Test')
+	plt.plot(numberOfColumns, times, 'ro')
+	plt.axis([0, 70, 0, 4000])
+	plt.show()
+	
+	plt.xlabel('Number of Attributes')
+	plt.ylabel('Execution time in seconds')
+	plt.title('Performance Test')
+	plt.plot(numberOfColumns, times, 'ro')
+	plt.axis([0, 80, 0, 5])
+	plt.show()		
 		
 def paperTest(U,A):
 	print '---UInd---'
