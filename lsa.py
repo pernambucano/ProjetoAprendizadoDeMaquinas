@@ -86,12 +86,7 @@ def getEntropy(attributesDict):
         for second_key in newDict.keys():
             if second_key != 'unique':
                 num =newDict.get(second_key) 
-#                print 'key', second_key
-#                print 'num', num
-#                print 'total', total_attributes 
                 p = num/total_attributes
-
-
                 
                 if p <= 0 :
                     entropyLocal += 0
@@ -117,13 +112,7 @@ def createFrequencyDict(a, U):
     return values
 
 def changeAttributesDict(attributeDict, di, dj):
-
-#    print 'changing the att dict'
-#    print 'di is ', di
-#    print 'dj is ', dj
-#    print 'att before', attributeDict
             
-        # e adicionar dj
     for index in xrange(di.shape[0]):
         newDict = attributeDict.get(index)
             #tirar di
@@ -154,9 +143,6 @@ def changeAttributesDict(attributeDict, di, dj):
                 frequency = newDict[dj[index]] + 1
                 newDict.update({dj[index]: frequency})
 
-
-            
-       #print 'newDict is this', newDict
 
     return attributeDict
 
