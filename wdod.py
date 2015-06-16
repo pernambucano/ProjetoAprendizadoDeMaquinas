@@ -1,6 +1,7 @@
 from __future__ import division
+import time
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 def UInd(a, U):
 
@@ -142,10 +143,12 @@ def WDODOtimizado(U,A,threshold):
 	indices = np.argsort(densityList)
 	
 	
-	print 'Outliers candidates'
+
+	#print 'Outliers candidates'
 	#Sorting outliers based on density - Descendent
 	outliers = outliers[indices]
-	print outliers
+	#print outliers
+
 	return outliers
 	
 def getClassList(matrix, classPosition):
@@ -218,6 +221,83 @@ def getTestData():
 	
 	return U,A
 	
+def getDataWithMultipliedRowsAndColumns(U, horizontalFactor, verticalFactor):
+
+	copyU = U
+	
+	for x in range(1,horizontalFactor):
+		copyU = np.vstack([copyU,U])
+		
+	for x in range(1,verticalFactor):
+		copyU = np.hstack([copyU,U])
+	return copyU
+	
+def rowsTest():
+	DATA,U,A = getLymphographyData()
+	print
+	
+	numberOfRows = []
+	times = []
+	for x in range (1,10):
+		
+		thousandRows = getDataWithMultipliedRowsAndColumns(U,7*x,0)
+		rows, columns = thousandRows.shape
+		print rows, "rows"
+		numberOfRows.append(rows)
+		start_time = time.clock()
+		outliers = WDODOtimizado(thousandRows,A,0.4)
+		end_time = time.clock() - start_time
+		print end_time, "seconds"
+		times.append(end_time)
+	
+	plt.xlabel('Number of object')
+	plt.ylabel('Execution time in seconds')
+	plt.title('Performance Test')
+	plt.plot(numberOfRows, times, 'ro')
+	plt.axis([0, 10000, 0, 6000])
+	plt.show()
+	
+	plt.xlabel('Number of object')
+	plt.ylabel('Execution time in seconds')
+	plt.title('Performance Test')
+	plt.plot(numberOfRows, times, 'ro')
+	plt.axis([0, 10000, 0, 5])
+	plt.show()
+		
+
+def columnsTest():
+	DATA,U,A = getLymphographyData()
+	print
+	
+	numberOfColumns = []
+	times = []
+	
+	for x in range (1,4):
+		
+		thousandColumns = getDataWithMultipliedRowsAndColumns(U,0,x)
+		rows, columns = thousandColumns.shape
+		print columns, "columns"
+		numberOfColumns.append(columns)
+		start_time = time.clock()
+		outliers = WDODOtimizado(thousandColumns,A,0.4)
+		end_time = time.clock() - start_time
+		print end_time, "seconds"
+		times.append(end_time)
+
+	plt.xlabel('Number of Attributes')
+	plt.ylabel('Execution time in seconds')
+	plt.title('Performance Test')
+	plt.plot(numberOfColumns, times, 'ro')
+	plt.axis([0, 70, 0, 4000])
+	plt.show()
+	
+	plt.xlabel('Number of Attributes')
+	plt.ylabel('Execution time in seconds')
+	plt.title('Performance Test')
+	plt.plot(numberOfColumns, times, 'ro')
+	plt.axis([0, 80, 0, 5])
+	plt.show()		
+		
 def paperTest(U,A):
 	print '---UInd---'
 	print UInd(0,U)
@@ -245,25 +325,32 @@ def paperTest(U,A):
 	
 def main():
 
-	# U,A = getTestData()
-# 	paperTest(U,A)
-# 	outliers = WDOD(U,A,0.4)
+
+	#U,A = getTestData()
+	#paperTest(U,A)
+	#WDOD(U,A,0.4)
 	
-# 	DATA,U,A = getLymphographyData()
-# 	outliers = WDODOtimizado(U,A,0.4) # - 4/4 unidades no lymph
-# 	#outliers = WDODOtimizado(U,A,0.50)# - 6/8 unidades no lymph
-# 	#outliers = WDODOtimizado(U,A,0.53)# - 12 unidades no lymph
-# 	#outliers = WDODOtimizado(U,A,0.541)# - 15 unidades no lymph
-# 	print 'Classe dos outliers'
-# 	print(getClassOfOutliers(outliers, DATA))
-# 	print
+	rowsTest()
+	columnsTest()
 	
-	DATA,U,A = getBreastCancerData()
-	#outliers = WDODOtimizado(U,A,0.041) # - 5/5
-	outliers = WDODOtimizado(U,A,0.049) # - 15/16
-	# print 'Classe dos outliers'
+	DATA,U,A = getLymphographyData()
+	outliers = WDODOtimizado(U,A,0.4) # - 4/4 unidades no lymph
+	#outliers = WDODOtimizado(U,A,0.50)# - 6/8 unidades no lymph
+	#outliers = WDODOtimizado(U,A,0.53)# - 12 unidades no lymph
+	#outliers = WDODOtimizado(U,A,0.541)# - 15 unidades no lymph
+	print
+	print 'Outliers candidates'
+	print outliers
+	print 'Classe dos outliers'
 	print(getClassOfOutliers(outliers, DATA))
 	print
+	
+	#DATA,U,A = getBreastCancerData()
+	#outliers = WDODOtimizado(U,A,0.041) # - 5/5
+	#outliers = WDODOtimizado(U,A,0.049) # - 15/16
+	# print 'Classe dos outliers'
+	#print(getClassOfOutliers(outliers, DATA))
+	#print
 
 	
 if __name__ == '__main__':
