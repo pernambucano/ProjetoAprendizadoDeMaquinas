@@ -91,10 +91,12 @@ def getEntropy(attributesDict):
 #                print 'total', total_attributes 
                 p = num/total_attributes
 
-#                if p <= 0 :
-#                    entropyLocal += 0
-#                else:
-                entropyLocal += p*np.log(p)
+
+                
+                if p <= 0 :
+                    entropyLocal += 0
+                else:
+                    entropyLocal += p*np.log(p)
         entropyTotal += -entropyLocal
     return entropyTotal
 
@@ -204,9 +206,9 @@ def getBreastCancerData():
 
 def main():
     #D = np.array([['a', 'e', 'm'], ['a', 'd', 'n'], ['b', 'g', 'm'], ['c', 'd', 'n'], ['c', 'g', 'm'], ['c', 'f', 'n']])
-    D = getBreastCancerData()
-    #D, U, A = getLymphographyData()
-    outliers =  lsa(D,40)
+    #D = getBreastCancerData()
+    D, U, A = getLymphographyData()
+    outliers =  lsa(D,16)
     print outliers[outliers[:,-1] == 1]
     #print outliers
 
