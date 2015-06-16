@@ -25,10 +25,9 @@ def lsa(D, k):
             putLabel(D[index], 'O')
         else:
             putLabel(D[index], 'N')
-
     # at this point, D[k+1:] is compound of non-outliers
     # and we need to create m  dicts, one for each attribute with their values and frequences
-    newD = D[k:]
+    newD = D[k:D.shape[0], :]
     attributesDict = {}
     for columns in xrange(newD.shape[1] - 2):
         attributesDict[columns] = createFrequencyDict(columns, newD)
@@ -46,14 +45,12 @@ def lsa(D, k):
                 for dj in D:
                     if getLabel(dj) == 'O':
                         exchangeLabels(di, dj)
-                        entropia1 = getEntropy(attributesDict)
                         attributesDict = changeAttributesDict(attributesDict, di[:-2], dj[:-2])
                         currentEntropy = getEntropy(attributesDict)
-                        entropia2 = currentEntropy
-                        print 'before',  entropia1
-                        print 'after', entropia2
-                        print 'gloabl entropy', globalEntropy
-                        print 'outliers', D[D[:,-1] == 1]
+#                        print 'before',  entropia1
+#                        print 'after', entropia2
+#                        print 'gloabl entropy', globalEntropy
+                        #print 'outliers', D[D[:,-1] == 1]
                         if currentEntropy < globalEntropy :
                             globalEntropy = currentEntropy
                             not_moved = True
@@ -62,6 +59,19 @@ def lsa(D, k):
                             attributesDict = changeAttributesDict(attributesDict, dj[:-2], di[:-2])
 
     return D
+
+
+def getLymphographyData():
+	#data with class
+	DATA = np.loadtxt('data/lymphography.all',delimiter=',')
+
+	#U Without class
+	U = DATA[:, :-1]
+	rows,columns = U.shape
+	A = range(0,columns)
+	
+	return DATA,U,A
+
 def getEntropy(attributesDict):
     entropyTotal = 0.0
 
@@ -72,14 +82,21 @@ def getEntropy(attributesDict):
         for second_key in newDict.keys():
             if second_key != 'unique':
                 total_attributes += newDict.get(second_key)
+        entropyLocal = 0
         for second_key in newDict.keys():
             if second_key != 'unique':
-                p = newDict.get(second_key)/total_attributes
-                entropyTotal += p*np.log(p)
+                num =newDict.get(second_key) 
+#                print 'key', second_key
+#                print 'num', num
+#                print 'total', total_attributes 
+                p = num/total_attributes
 
-
-
-    return -entropyTotal
+#                if p <= 0 :
+#                    entropyLocal += 0
+#                else:
+                entropyLocal += p*np.log(p)
+        entropyTotal += -entropyLocal
+    return entropyTotal
 
 
 def createFrequencyDict(a, U):
@@ -102,32 +119,43 @@ def changeAttributesDict(attributeDict, di, dj):
 #    print 'changing the att dict'
 #    print 'di is ', di
 #    print 'dj is ', dj
-#    print 'att before', attributeDict 
+#    print 'att before', attributeDict
+            
+        # e adicionar dj
     for index in xrange(di.shape[0]):
         newDict = attributeDict.get(index)
             #tirar di
+#        apagou= True
+#        if di[index] in newDict:
+#            frequency = newDict[di[index]] - 1
+#            newDict.update({di[index]:frequency})
+#        else:
+#            apagou = False
+#
+#        if apagou:
+#            if dj[index] in newDict:
+#                frequency = newDict[dj[index]] + 1
+#                newDict.update({dj[index]: frequency})
+#            else:
+#                if dj[index] in newDict.get('unique'):
+#                    newDict.update({dj[index]:1})
+                
         apagou = True
         if di[index] in newDict:
             frequency = newDict[di[index]] - 1
-            if frequency <= 0:
-                del newDict[di[index]]
-            else:
-                newDict.update({di[index]:frequency})
-        else:
+            newDict.update({di[index]:frequency})
+        else: 
             apagou = False
-            
         # e adicionar dj
         if apagou:
             if dj[index] in newDict:
                 frequency = newDict[dj[index]] + 1
                 newDict.update({dj[index]: frequency})
-            else:
-                if dj[index] in newDict.get('unique'):
-                    newDict.update({dj[index]:1})
 
-        #print 'newDict is this', newDict
 
-    #print 'att after', attributeDict 
+            
+       #print 'newDict is this', newDict
+
     return attributeDict
 
 
@@ -139,7 +167,7 @@ def exchangeLabels(di, dj):
 def putLabel(d, label):
 
     if label == 'N':
-        d[-1] = 0
+        d[-1] =0
     elif label == 'O':
         d[-1] = 1
 
@@ -177,8 +205,9 @@ def getBreastCancerData():
 def main():
     #D = np.array([['a', 'e', 'm'], ['a', 'd', 'n'], ['b', 'g', 'm'], ['c', 'd', 'n'], ['c', 'g', 'm'], ['c', 'f', 'n']])
     D = getBreastCancerData()
-    outliers =  lsa(D,15)
-    #print outliers[outliers[:,-1] == 1]
+    #D, U, A = getLymphographyData()
+    outliers =  lsa(D,40)
+    print outliers[outliers[:,-1] == 1]
     #print outliers
 
 if __name__ == '__main__':
