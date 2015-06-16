@@ -1,4 +1,5 @@
 from __future__ import division
+import time
 import numpy as np
 
 
@@ -135,8 +136,6 @@ def WDODOtimizado(U,A,threshold):
 		if density < threshold:
 			outliers = np.vstack([outliers, x])
 	
-	print 'Outliers candidates'
-	print outliers
 	return outliers
 	
 def getClassList(matrix, classPosition):
@@ -209,6 +208,41 @@ def getTestData():
 	
 	return U,A
 	
+def getDataWithMultipliedRowsAndColumns(U, horizontalFactor, verticalFactor):
+
+	copyU = U
+	
+	for x in range(1,horizontalFactor):
+		copyU = np.vstack([copyU,U])
+		
+	for x in range(1,verticalFactor):
+		copyU = np.hstack([copyU,U])
+	return copyU
+	
+def rowsTest():
+	DATA,U,A = getLymphographyData()
+	print
+	for x in range (1,10):
+		
+		thousandRows = getDataWithMultipliedRowsAndColumns(U,7*x,0)
+		rows, columns = thousandRows.shape
+		print rows, "rows"
+		start_time = time.clock()
+		outliers = WDODOtimizado(thousandRows,A,0.4)
+		print time.clock() - start_time, "seconds"
+
+def columnsTest():
+	DATA,U,A = getLymphographyData()
+	print
+	for x in range (1,5):
+		
+		thousandColumns = getDataWithMultipliedRowsAndColumns(U,0,x)
+		rows, columns = thousandColumns.shape
+		print columns, "columns"
+		start_time = time.clock()
+		outliers = WDODOtimizado(thousandColumns,A,0.4)
+		print time.clock() - start_time, "seconds"		
+		
 def paperTest(U,A):
 	print '---UInd---'
 	print UInd(0,U)
@@ -240,21 +274,28 @@ def main():
 	#paperTest(U,A)
 	#WDOD(U,A,0.4)
 	
+	
 	DATA,U,A = getLymphographyData()
 	outliers = WDODOtimizado(U,A,0.4) # - 4/4 unidades no lymph
+	
 	#outliers = WDODOtimizado(U,A,0.50)# - 6/8 unidades no lymph
 	#outliers = WDODOtimizado(U,A,0.53)# - 12 unidades no lymph
 	#outliers = WDODOtimizado(U,A,0.541)# - 15 unidades no lymph
+	print 'Outliers candidates'
+	print outliers
 	print 'Classe dos outliers'
 	print(getClassOfOutliers(outliers, DATA))
 	print
 	
-	DATA,U,A = getBreastCancerData()
+	rowsTest()
+	columnsTest()
+	
+	#DATA,U,A = getBreastCancerData()
 	#outliers = WDODOtimizado(U,A,0.041) # - 5/5
-	outliers = WDODOtimizado(U,A,0.049) # - 15/16
-	print 'Classe dos outliers'
-	print(getClassOfOutliers(outliers, DATA))
-	print
+	#outliers = WDODOtimizado(U,A,0.049) # - 15/16
+	#print 'Classe dos outliers'
+	#print(getClassOfOutliers(outliers, DATA))
+	#print
 
 	
 if __name__ == '__main__':
