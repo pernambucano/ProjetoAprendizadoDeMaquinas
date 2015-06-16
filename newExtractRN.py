@@ -28,21 +28,21 @@ def getEntropy(positiveLabels, di, P):
         if probability != 0:
             entropy += probability * np.log(probability)
 
-    return entropy
+    return -entropy
 
 def getProbability(positiveLabels, di, P, classLabel):
     probability = 0
-    distance_numerator = 0
+    distance_numerator = 1000
     numOfRows, numOfcolumns = P.shape
     pj_temp =  np.array([]).reshape(0,numOfcolumns)
     for pj in P:
         dist_temp = euclidianDistance(di, pj)
-        if dist_temp > distance_numerator:
+        if dist_temp < distance_numerator:
             distance_numerator = dist_temp
             pj_temp =  np.array([]).reshape(0,numOfcolumns)
             pj_temp = np.vstack([pj_temp, pj])
 
-    distance_denominator = 0
+    distance_denominator = -1000
     for classLabel in positiveLabels:
         for p in P:
             if ~(np.all(np.all(p==pj_temp, axis=0), axis=0)):
@@ -50,8 +50,12 @@ def getProbability(positiveLabels, di, P, classLabel):
                 if dist_temp > distance_denominator:
                     distance_denominator = dist_temp
 
-    if distance_denominator != 0:
-        probability = distance_numerator/distance_denominator
+
+    # if distance_denominator != 0:
+    #     probability = distance_numerator/distance_denominator
+    # else:
+    #     probability = distance_numerator
+    probability = distance_numerator/distance_denominator
     return probability
 
 def euclidianDistance(d, p):

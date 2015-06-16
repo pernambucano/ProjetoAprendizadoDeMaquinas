@@ -64,7 +64,7 @@ def newEod(k, P, RN, U):
         if getLabel(di) == 'O':
             outlierCandidates = np.vstack([outlierCandidates, di])
 
-
+    print outlierCandidates
     return outlierCandidates
 
 def deleteRow(Array, row):
@@ -116,9 +116,8 @@ def getBreastCancerData():
 	database1 = database1[:, 1:]
 	(rows, columns) = database1.shape
 
-
-	normData = normalize(database1)
-
+        normData = database1
+	#normData = normalize(database1)
 
 	benign = np.array([]).reshape(0,columns)
 	malign = np.array([]).reshape(0,columns)
@@ -137,8 +136,32 @@ def getBreastCancerData():
 	U = np.vstack([benign,reducedMalign])
 	np.random.shuffle(U)
 
-
 	return P, U
+
+
+def testData():
+    	mu_vec1 = np.array([0,0,0])
+    	cov_mat1 = np.array([[1,0,0],[0,1,0],[0,0,1]])
+    	class1_sample = np.random.multivariate_normal(mu_vec1, cov_mat1, 300).T
+    	class1_sample = class1_sample.T
+    	class1_rows, class1_columns = class1_sample.shape
+    	class1_sample = np.c_[class1_sample, np.zeros(class1_rows)]
+
+    	mu_vec2 = np.array([1,1,1])
+    	cov_mat2 = np.array([[1,0,0],[0,1,0],[0,0,1]])
+    	class2_sample = np.random.multivariate_normal(mu_vec2, cov_mat2, 10).T
+    	class2_sample =  class2_sample.T
+    	class2_rows, class2_columns = class2_sample.shape
+    	class2_sample = np.c_[class2_sample, np.ones(class2_rows)]
+    	norm_class1 = normalize(class1_sample)
+    	norm_class2 = normalize(class2_sample)
+    	np.random.shuffle(norm_class2)
+
+    	P = norm_class2[:3,:]
+    	U = np.vstack([norm_class1, norm_class2])
+
+        return P, U
+
 
 def normalize(T):
 	norm =   (T[:, :-1] - T[:, :-1].min(axis=0)) / T[:,:-1].ptp(axis=0)
@@ -148,6 +171,7 @@ def normalize(T):
 
 def main():
     P, U = getBreastCancerData()
+    #P, U = testData()
     np.random.shuffle(U)
     RN = ern.newExtractRN(P,U)
     result = newEod(10, P, RN, U)

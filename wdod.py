@@ -6,8 +6,10 @@ import numpy as np
 def UInd(a, U):
 
 	values = {}
+
 	for index, element in enumerate(U):
 		value = element[a]
+
 		if value in values:
 			list = values[value]
 			list.append(index)
@@ -122,6 +124,7 @@ def WDODOtimizado(U,A,threshold):
 	rows, columns = U.shape
 	outliers = np.zeros(shape=(0,columns))
 	
+	densityList = []
 	indList = []
 	entropyList = []
 	
@@ -134,8 +137,18 @@ def WDODOtimizado(U,A,threshold):
 		
 		density = WDensOtimizado(x,U,A,indList,entropyList)
 		if density < threshold:
+			densityList.append(density)
 			outliers = np.vstack([outliers, x])
+
+	indices = np.argsort(densityList)
 	
+	
+
+	#print 'Outliers candidates'
+	#Sorting outliers based on density - Descendent
+	outliers = outliers[indices]
+	#print outliers
+
 	return outliers
 	
 def getClassList(matrix, classPosition):
@@ -230,6 +243,7 @@ def rowsTest():
 		start_time = time.clock()
 		outliers = WDODOtimizado(thousandRows,A,0.4)
 		print time.clock() - start_time, "seconds"
+		
 
 def columnsTest():
 	DATA,U,A = getLymphographyData()
@@ -270,30 +284,30 @@ def paperTest(U,A):
 	
 def main():
 
+
 	#U,A = getTestData()
 	#paperTest(U,A)
 	#WDOD(U,A,0.4)
 	
+	rowsTest()
+	columnsTest()
 	
 	DATA,U,A = getLymphographyData()
 	outliers = WDODOtimizado(U,A,0.4) # - 4/4 unidades no lymph
-	
 	#outliers = WDODOtimizado(U,A,0.50)# - 6/8 unidades no lymph
 	#outliers = WDODOtimizado(U,A,0.53)# - 12 unidades no lymph
 	#outliers = WDODOtimizado(U,A,0.541)# - 15 unidades no lymph
+	print
 	print 'Outliers candidates'
 	print outliers
 	print 'Classe dos outliers'
 	print(getClassOfOutliers(outliers, DATA))
 	print
 	
-	rowsTest()
-	columnsTest()
-	
 	#DATA,U,A = getBreastCancerData()
 	#outliers = WDODOtimizado(U,A,0.041) # - 5/5
 	#outliers = WDODOtimizado(U,A,0.049) # - 15/16
-	#print 'Classe dos outliers'
+	# print 'Classe dos outliers'
 	#print(getClassOfOutliers(outliers, DATA))
 	#print
 
